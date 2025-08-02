@@ -1,0 +1,1 @@
+ALTER TABLE companies ADD COLUMN num_branches INTEGER DEFAULT 1;

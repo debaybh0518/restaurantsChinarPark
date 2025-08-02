@@ -1,0 +1,47 @@
+# Docker Compose for full stack app
+version: '3.8'
+services:
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: restaurant_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - appnet
+
+  backend:
+    build: ./backend
+    restart: always
+    env_file:
+      - ./backend/.env
+    ports:
+      - '5000:5000'
+    depends_on:
+      - db
+    networks:
+      - appnet
+
+  frontend:
+    build: ./frontend
+    restart: always
+    env_file:
+      - ./frontend/.env
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+    networks:
+      - appnet
+
+volumes:
+  db_data:
+
+networks:
+  appnet:
+    driver: bridge
